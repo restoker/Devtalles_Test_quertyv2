@@ -2,12 +2,22 @@
 
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
+import { useSession } from 'next-auth/react'
 import LearnMoreButton from '@/components/pixel-perfect/learn-more-button'
 import MagneticWarp from '@/components/pixel-perfect/magnetic-warp'
 import Navbar from './navbar'
 // import RocketBlast from './ascii/rocket-blast'
 
 const Hero = () => {
+    const { data: session } = useSession()
+    const isAdmin = session?.user?.role?.toLowerCase() === 'admin'
+    const discoverHref = !session?.user ? '/register' : '/admin/assessments'
+    const roadmapsHref = !session?.user
+        ? '/login'
+        : isAdmin
+            ? '/admin/roadmaps'
+            : '/admin/roadmaps/mios'
+
     return (
         <div className="bg-white dark:bg-gray-900">
             <Navbar />
@@ -19,7 +29,7 @@ const Hero = () => {
                             viewBox="0 0 100 100"
                             preserveAspectRatio="none"
                             aria-hidden="true"
-                            className="absolute inset-y-0 right-8 hidden h-full w-80 translate-x-1/2 transform fill-white lg:block dark:fill-gray-900"
+                            className="pointer-events-none absolute inset-y-0 right-8 hidden h-full w-80 translate-x-1/2 transform fill-white lg:block dark:fill-gray-900"
                         >
                             <polygon points="0,0 90,0 50,100 0,100" />
                         </svg>
@@ -30,7 +40,7 @@ const Hero = () => {
                                 {/* Eyebrow Badge with interactive LearnMoreButton effects */}
                                 <div className="mb-7 flex">
                                     <LearnMoreButton
-                                        href="/register"
+                                        href={discoverHref}
                                         badge="2026"
                                         text="Roadmaps de Programación"
                                         actionText="Explorar"
@@ -51,7 +61,7 @@ const Hero = () => {
                                 {/* Moderate High-End Action CTAs */}
                                 <div className="mt-8 sm:mt-10 flex flex-wrap items-center gap-3.5 sm:gap-4">
                                     <Link
-                                        href="/register"
+                                        href={discoverHref}
                                         className="group inline-flex items-center justify-center gap-2.5 rounded-full bg-purple-600 dark:bg-purple-600 px-5 sm:px-6 py-2.5 sm:py-3 text-sm font-semibold text-white dark:text-neutral-950 shadow-sm transition-all duration-150 ease-out hover:bg-purple-700 dark:hover:bg-purple-700 active:scale-[0.98] cursor-pointer"
                                     >
                                         <span>Descubrir mi ruta</span>
@@ -61,7 +71,7 @@ const Hero = () => {
                                     </Link>
 
                                     <Link
-                                        href="/login"
+                                        href={roadmapsHref}
                                         className="inline-flex items-center justify-center rounded-full border border-purple-600 dark:border-purple-600 bg-transparent px-5 sm:px-6 py-2.5 sm:py-3 text-sm font-semibold text-purple-600 dark:text-purple-600 transition-all duration-150 ease-out hover:border-purple-400 dark:hover:border-purple-600 hover:bg-purple-100/20 dark:hover:bg-purple-800/20 active:scale-[0.98] cursor-pointer"
                                     >
                                         Ver roadmaps
@@ -71,7 +81,7 @@ const Hero = () => {
                         </div>
                     </div>
                 </div>
-                <div className="bg-gray-50 lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2 dark:bg-gray-800">
+                <div className="pointer-events-none bg-gray-50 lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2 dark:bg-gray-800">
                     {/* <img
             alt=""
             src="https://cdn.cosmos.so/66f53774-ad96-4c47-9f2f-1e022865a82d?format=webp"

@@ -4,7 +4,8 @@ import { actionClient } from "@/lib/action-client";
 import { signIn } from "@/server/auth";
 import { loginSchema } from "@/types/login-schema";
 
-// Password1!
+const LOGIN_ERROR = "No se pudo iniciar sesión. Intenta de nuevo.";
+
 export const loginAction = actionClient
     .inputSchema(loginSchema)
     .action(async ({ parsedInput: { email, password } }) => {
@@ -19,28 +20,34 @@ export const loginAction = actionClient
                 body: JSON.stringify({ email: sanitizedEmail, password })
             });
             const data = await user.json();
-            // console.log(data.data);
-            if (!data.data) {
+            if (!user.ok || !data?.data) {
                 return {
-                    ok: false,
-                    msg: data.msg
+                    ok: false as const,
+                    msg: LOGIN_ERROR,
                 }
             }
 
-            const usuario = await signIn('credentials', {
-                ...{ email, password },
-                redirect: false
+            const session = await signIn('credentials', {
+                email,
+                password,
+                redirect: false,
             });
 
-            return {
-                ok: true,
-                msg: 'Wellcome back',
+            if (!session || (typeof session === "object" && "error" in session && session.error)) {
+                return {
+                    ok: false as const,
+                    msg: LOGIN_ERROR,
+                }
             }
-        } catch (e) {
-            // console.log(e as CredentialsSignin);
+
             return {
-                ok: false,
-                msg: 'Error al iniciar sesión'
+                ok: true as const,
+                msg: 'Bienvenido de nuevo',
+            }
+        } catch {
+            return {
+                ok: false as const,
+                msg: LOGIN_ERROR,
             }
         }
     })

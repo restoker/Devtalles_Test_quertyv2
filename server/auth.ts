@@ -5,8 +5,59 @@ import discord from 'next-auth/providers/discord';
 import { loginSchema } from "@/types/login-schema";
 import { ExtendUser } from "@/next-auth";
 
+type ApiAccount = {
+    id?: string;
+    email?: string;
+    role?: string | null;
+    name?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
+    lastname?: string | null;
+    image?: string | null;
+};
+
+function applyAccount(
+    token: { sub?: string; name?: string | null; email?: string | null; role?: string | null; lastname?: string | null; image?: string | null; tokenAuth?: string },
+    account: ApiAccount,
+    accessToken?: string,
+) {
+    if (account.id) token.sub = account.id;
+    if (account.email) token.email = account.email;
+    if (account.role) token.role = account.role;
+    const name = account.name || account.firstName;
+    const lastname = account.lastname || account.lastName;
+    if (name) token.name = name;
+    if (lastname) token.lastname = lastname;
+    if (account.image) token.image = account.image;
+    if (accessToken) token.tokenAuth = accessToken;
+    return token;
+}
+
+async function refreshAccount(token: { sub?: string; name?: string | null; email?: string | null; role?: string | null; lastname?: string | null; image?: string | null; tokenAuth?: string }) {
+    if (!token.tokenAuth) return token;
+
+    try {
+        const response = await fetch(`${process.env.ADDRESS_SERVER}/api/auth/renovated`, {
+            headers: { Authorization: `Bearer ${token.tokenAuth}` },
+            cache: "no-store",
+        });
+        if (!response.ok) return token;
+
+        const body = await response.json();
+        const account = body?.data?.user as ApiAccount | undefined;
+        if (!account) return token;
+
+        applyAccount(token, account, body.data.token);
+    } catch {
+        return token;
+    }
+
+    return token;
+}
+
 export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
     secret: process.env.AUTH_SECRET,
+    trustHost: true,
     session: {
         strategy: 'jwt',
     },
@@ -27,8 +78,7 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
             //     return token;
             // }
             if (user) {
-                token.tokenAuth = usuario.tokenAuth;
-                token.role = usuario.role;
+                applyAccount(token, usuario, usuario.tokenAuth);
             }
 
             if (account && account.provider === 'discord') {
@@ -94,46 +144,21 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
             }
 
 
-            if (!token.sub) return token;
-            // get user by id
-            const existUser = await fetch(`${process.env.ADDRESS_SERVER}/api/users/${token.sub}`, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
-            const existUserJson = await existUser.json();
-            if (!existUserJson.ok) return token;
-            // console.log({ existUserJson });
-            token.name = existUserJson.data.name;
-            token.lastname = existUserJson.data.lastname;
-            token.email = existUserJson.data.email;
-            token.role = existUserJson.data.role;
-            // if (user) {
-            // token.tokenAuth = usuario.tokenAuth;
-            // // }
-            // token.tokenAuth = existUserJson.access_token;
+            if (user || !token.role || !token.name) {
+                return refreshAccount(token);
+            }
 
             return token;
         },
-        async session({ session, user, token, }) {
-            // console.log({ user });
-            // console.log({ token });
-            // console.log({ session });
-
-            if (session && token.sub) {
-                session.user.id = token.sub;
-            }
-            if (session.user && token.role) {
-                session.user.role = token.role as string;
-            }
-
+        async session({ session, token }) {
             if (session.user) {
-                session.user.image = token.image as string;
-                session.user.name = token.name as string;
-                session.user.lastname = token.lastname as string;
-                session.user.email = token.email as string;
-                session.user.tokenAuth = token.tokenAuth as string;
+                session.user.id = token.sub ?? "";
+                session.user.role = token.role ?? null;
+                session.user.name = token.name ?? "";
+                session.user.lastname = token.lastname ?? "";
+                session.user.email = token.email ?? "";
+                session.user.image = (token.image as string | null) ?? null;
+                session.user.tokenAuth = token.tokenAuth ?? "";
             }
             return session;
         },
@@ -144,8 +169,33 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
             credentials: {
                 email: { label: "Email", type: "email" },
                 password: { label: "Password", type: "password" },
+                discordTicket: { label: "Discord ticket", type: "text" },
             },
             authorize: async (credentials) => {
+                const discordTicket = credentials?.discordTicket;
+                if (typeof discordTicket === 'string' && discordTicket.length > 0) {
+                    const exchanged = await fetch(`${process.env.ADDRESS_SERVER}/api/auth/discord/exchange`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ code: discordTicket }),
+                    });
+                    const exchangedJson = await exchanged.json();
+                    const session = exchangedJson.data;
+                    if (!session?.accessToken || !session?.user) return null;
+
+                    return {
+                        id: session.user.id,
+                        name: session.user.firstName,
+                        lastname: session.user.lastName ?? '',
+                        email: session.user.email,
+                        role: session.user.role,
+                        image: null,
+                        tokenAuth: session.accessToken,
+                    };
+                }
+
                 const validatedFields = loginSchema.safeParse(credentials);
                 if (validatedFields.success) {
 
@@ -165,19 +215,19 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
                     const userJson = await user.json();
                     // console.log(userJson.data);
 
-                    if (!userJson.data) return null;
-                    // console.log(userJson);
-                    const usuario = {
-                        ...userJson.data.user,
-                        tokenAuth: userJson.data.accessToken,
-                    }
-                    // if (!userJson.ok || !userJson.password) return null;
-                    // if (!userJson.hasOwnProperty("ok")) return null;
+                    const profile = userJson.data?.user as ApiAccount | undefined;
+                    const accessToken = userJson.data?.accessToken as string | undefined;
+                    if (!profile?.id || !accessToken) return null;
 
-                    // verificar el password
-                    // const passCorrect = await bcrypt.compare(password, userJson.password);
-                    // if (userJson.hasOwnProperty("user")) {
-                    return usuario;
+                    return {
+                        id: String(profile.id),
+                        name: profile.firstName ?? profile.name ?? "",
+                        email: profile.email ?? "",
+                        lastname: profile.lastName ?? profile.lastname ?? "",
+                        role: profile.role ?? null,
+                        image: profile.image ?? null,
+                        tokenAuth: accessToken,
+                    };
                     // }
                     // if (!passCorrect) return null;
                 }

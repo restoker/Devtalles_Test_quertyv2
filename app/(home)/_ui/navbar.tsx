@@ -10,13 +10,19 @@ import DrawSVGPlugin from 'gsap/DrawSVGPlugin'
 import AnimatedLogo from '@/components/AnimatedLogo'
 import { getSession, signOut } from 'next-auth/react'
 import type { Session } from 'next-auth'
+import { authenticatedHome } from '@/lib/auth-routes'
 import UserDropdown from './dropdown'
 
-export const navigation = [
-    { name: 'Mi perfil', href: '#' },
-    { name: 'Features', href: '#' },
-    { name: 'Marketplace', href: '#' },
-]
+export const navigationFor = (session: Session | null) => {
+    const home = session?.user ? authenticatedHome(session.user.role) : null
+    const isAdmin = session?.user?.role?.toLowerCase() === 'admin'
+
+    return [
+        { name: 'Mi perfil', href: session?.user ? '/profile' : '/login' },
+        { name: 'Features', href: '/#features' },
+        { name: 'Marketplace', href: isAdmin ? '/admin/cursos' : (home ?? '/login') },
+    ]
+}
 
 const svgVariants = [
     `<svg width="310" height="40" viewBox="0 0 310 40" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 20.9999C26.7762 16.2245 49.5532 11.5572 71.7979 14.6666C84.9553 16.5057 97.0392 21.8432 109.987 24.3888C116.413 25.6523 123.012 25.5143 129.042 22.6388C135.981 19.3303 142.586 15.1422 150.092 13.3333C156.799 11.7168 161.702 14.6225 167.887 16.8333C181.562 21.7212 194.975 22.6234 209.252 21.3888C224.678 20.0548 239.912 17.991 255.42 18.3055C272.027 18.6422 288.409 18.867 305 17.9999" stroke="currentColor" stroke-width="10" stroke-linecap="round"/></svg>`,
@@ -190,7 +196,7 @@ const MobileMenuContent = ({ onClose, session }: MobileMenuContentProps) => {
                 <div className="mt-6 flow-root">
                     <div className="-my-6 divide-y divide-gray-500/10 dark:divide-white/10">
                         <div className="flex flex-col space-y-2 py-6">
-                            {navigation.map((item) => (
+                            {navigationFor(session).map((item) => (
                                 <div key={item.name} className="mobile-nav-item">
                                     <DrawLineLink
                                         href={item.href}
@@ -280,7 +286,7 @@ export const Navbar = ({ className = '' }: NavbarProps) => {
                         <div className="flex items-center gap-x-8 lg:gap-x-10">
                             <AnimatedLogo srText="DevTalles" className="text-2xl font-bold" />
                             <div className="hidden lg:flex lg:items-center lg:gap-x-8">
-                                {navigation.map((item) => (
+                                {navigationFor(session).map((item) => (
                                     <DrawLineLink
                                         key={item.name}
                                         href={item.href}

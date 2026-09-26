@@ -15,3 +15,11 @@ declare module 'next-auth' {
         user: ExtendUser
     }
 }
+
+declare module 'next-auth/jwt' {
+    interface JWT {
+        role?: string | null
+        lastname?: string | null
+        tokenAuth?: string
+    }
+}

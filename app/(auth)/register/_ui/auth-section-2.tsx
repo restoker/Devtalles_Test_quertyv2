@@ -11,6 +11,7 @@ import { registerSchema } from "@/types/register-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAction } from "next-safe-action/hooks";
 import { registerAction } from "@/server/actions/auth/register-action";
+import { discordLoginAction } from "@/server/actions/auth/discord-action";
 import { cn } from "@/lib/utils";
 import { toast } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
@@ -109,7 +110,7 @@ export default function AuthSectionTwo() {
             LEFT CARD: MIDJOURNEY SHOWCASE (BENTO + PROMPT HUD)
            ========================================================================= */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.99 }}
+          initial={false}
           animate={{ opacity: 1, scale: 1 }}
           transition={SPRING_TRANSITION}
           className="relative hidden lg:flex flex-col justify-between overflow-hidden rounded-2xl sm:rounded-3xl bg-black px-6 py-5 xl:px-8 xl:py-6 text-white shadow-2xl h-full"
@@ -174,7 +175,7 @@ export default function AuthSectionTwo() {
             RIGHT CARD: REGISTRATION FORM (COMPACT & VIEWPORT FITTED)
            ========================================================================= */}
         <motion.div
-          initial={{ opacity: 0, y: 12 }}
+          initial={false}
           animate={{ opacity: 1, y: 0 }}
           transition={SPRING_TRANSITION}
           className="flex h-full flex-col justify-between rounded-2xl sm:rounded-3xl border border-black/10 bg-white p-5 sm:p-7 md:p-8 lg:p-7 xl:p-8 dark:border-white/10 dark:bg-[#0a0a0a] shadow-sm dark:shadow-2xl overflow-y-auto"
@@ -197,9 +198,9 @@ export default function AuthSectionTwo() {
             </div>
 
             {/* Social Logins */}
-            <div className="mt-3.5 sm:mt-4">
-              <SocialButton icon={<DiscordIcon />} label="Registrarse con Discord" />
-            </div>
+            <form action={discordLoginAction} className="mt-3.5 sm:mt-4">
+              <SocialButton type="submit" icon={<DiscordIcon />} label="Registrarse con Discord" />
+            </form>
 
             {/* Divider */}
             <div className="relative my-3 flex items-center justify-center">
@@ -317,6 +318,11 @@ export default function AuthSectionTwo() {
                   )}
                 />
               </div>
+              {!form.formState.errors.password ? (
+                <p className="text-[11px] leading-snug text-black/45 dark:text-white/45">
+                  Mayúscula, minúscula y un número o carácter especial. Entre 8 y 20 caracteres.
+                </p>
+              ) : null}
 
               {/* Submit CTA (Instant press physics, Apple-inspired) */}
               <button
@@ -393,10 +399,10 @@ function FocusCorners({ active }: { active: boolean }) {
   );
 }
 
-function SocialButton({ icon, label }: { icon: ReactNode; label: string }) {
+function SocialButton({ icon, label, type = "button" }: { icon: ReactNode; label: string; type?: "button" | "submit" }) {
   return (
     <button
-      type="button"
+      type={type}
       className="flex h-9 sm:h-10 w-full items-center justify-center gap-2.5 rounded-xl border border-black/15 bg-white px-3 text-xs sm:text-[13px] font-medium text-black transition-all duration-150 ease-out active:scale-[0.98] hover:bg-black/4 dark:border-white/15 dark:bg-white/5 dark:text-white dark:hover:bg-white/10 cursor-pointer"
     >
       <span className="shrink-0">{icon}</span>
