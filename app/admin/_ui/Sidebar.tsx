@@ -23,24 +23,15 @@ import {
 } from '@/components/ui/sidebar'
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
-    Activity03Icon,
-    ArrowLeftRightIcon,
-    Calendar01Icon,
-    ChartLineData01Icon,
     ChartNoAxesCombinedIcon,
-    Clock9,
     CrownIcon,
     Folder01Icon,
-    HashtagIcon,
-    HelpCircleIcon,
     Home01Icon,
-    PieChartIcon,
+    Route01Icon,
     SecurityCheckIcon,
-    SettingsIcon,
     SourceCodeIcon,
     Sparkles,
     TaskDaily01Icon,
-    Undo03Icon,
     User02Icon,
     UserMultiple03Icon,
 } from "@hugeicons/core-free-icons"
@@ -86,7 +77,7 @@ export const adminNavGroups: NavGroup[] = [
         items: [
             {
                 title: 'Gestión de Usuarios',
-                href: '/admin/usuarios',
+                href: '/admin/users',
                 icon: UserMultiple03Icon,
                 badge: '12',
                 badgeColor: 'bg-primary/10 text-primary font-medium',
@@ -95,6 +86,8 @@ export const adminNavGroups: NavGroup[] = [
                 title: 'Roles y Seguridad',
                 href: '/admin/roles',
                 icon: SecurityCheckIcon,
+                badge: 'En curso',
+                badgeColor: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 font-medium',
             },
             {
                 title: 'Categorias',
@@ -111,19 +104,85 @@ export const adminNavGroups: NavGroup[] = [
                 href: '/admin/cursos',
                 icon: CrownIcon,
             },
-        ],
-    },
-    {
-        label: 'Sistema y Configuración',
-        items: [
-
             {
-                title: 'Configuración del Sistema',
-                href: '/admin/settings',
-                icon: SettingsIcon,
+                title: 'Roadmaps',
+                href: '/admin/roadmaps',
+                icon: Sparkles,
+            },
+            {
+                title: 'Cuestionarios',
+                href: '/admin/questionnaires',
+                icon: TaskDaily01Icon,
             },
         ],
     },
+    {
+        label: 'Cuenta',
+        items: [
+            {
+                title: 'Mi perfil',
+                href: '/admin/profile',
+                icon: User02Icon,
+            },
+        ],
+    },
+    // {
+    //     label: 'Analíticas y Rendimiento',
+    //     items: [
+    //         {
+    //             title: 'Content Performance',
+    //             href: '/admin/content',
+    //             icon: ChartLineData01Icon,
+    //         },
+    //         {
+    //             title: 'Audience Insight',
+    //             href: '/admin/audience',
+    //             icon: UserMultiple03Icon,
+    //         },
+    //         {
+    //             title: 'Engagement Metrics',
+    //             href: '/admin/engagement',
+    //             icon: PieChartIcon,
+    //         },
+    //         {
+    //             title: 'Hashtag Performance',
+    //             href: '/admin/hashtags',
+    //             icon: HashtagIcon,
+    //             badge: 3,
+    //             badgeColor: 'bg-primary/10 text-primary',
+    //         },
+    //         {
+    //             title: 'Competitor Analysis',
+    //             href: '/admin/competitor',
+    //             icon: ArrowLeftRightIcon,
+    //         },
+    //         {
+    //             title: 'Sentiment Tracking',
+    //             href: '/admin/sentiment',
+    //             icon: TaskDaily01Icon,
+    //         },
+    //     ],
+    // },
+    // {
+    //     label: 'Sistema y Configuración',
+    //     items: [
+    //         {
+    //             title: 'Calendario Global',
+    //             href: '/admin/calendar',
+    //             icon: Calendar01Icon,
+    //         },
+    //         {
+    //             title: 'Reportes y Auditoría',
+    //             href: '/admin/reports',
+    //             icon: Undo03Icon,
+    //         },
+    //         {
+    //             title: 'Configuración del Sistema',
+    //             href: '/admin/settings',
+    //             icon: SettingsIcon,
+    //         },
+    //     ],
+    // },
 ]
 
 // ==========================================
@@ -133,73 +192,64 @@ export const userNavGroups: NavGroup[] = [
     {
         items: [
             {
-                title: 'Mi Dashboard',
+                title: 'Dashboard',
                 href: '/admin',
                 icon: Home01Icon,
             },
+        ],
+    },
+    {
+        label: 'Roadmaps',
+        items: [
             {
-                title: 'Roadmap de Innovación',
-                href: '/admin/roadmap',
+                title: 'Roadmaps globales',
+                href: '/admin/roadmaps/globales',
                 icon: Sparkles,
             },
-        ],
-    },
-    {
-        label: 'Mi Contenido y Métricas',
-        items: [
             {
-                title: 'Rendimiento de Contenido',
-                href: '/admin/content',
-                icon: ChartLineData01Icon,
+                title: 'Roadmaps',
+                href: '/admin/roadmaps/mios',
+                icon: Route01Icon,
             },
+            // {
+            //     title: 'Crear roadmap',
+            //     href: '/admin/roadmaps/new',
+            //     icon: Route01Icon,
+            // },
             {
-                title: 'Métricas de Interacción',
-                href: '/admin/engagement',
-                icon: PieChartIcon,
-            },
-            {
-                title: 'Hashtags y Tendencias',
-                href: '/admin/hashtags',
-                icon: HashtagIcon,
-            },
-            {
-                title: 'Mis Campañas',
-                href: '/admin/campaigns',
-                icon: Clock9,
+                title: 'Cuestionarios',
+                href: '/admin/assessments',
+                icon: TaskDaily01Icon,
             },
         ],
     },
     {
-        label: 'Herramientas y Cuenta',
+        label: 'Cuenta',
         items: [
             {
-                title: 'Mis Reportes y Exportes',
-                href: '/admin/reports',
-                icon: Undo03Icon,
-            },
-            {
-                title: 'Mis Archivos',
-                href: '/admin/files',
-                icon: Folder01Icon,
-            },
-            {
-                title: 'Mi Perfil y Cuenta',
+                title: 'Mi perfil',
                 href: '/admin/profile',
                 icon: User02Icon,
-            },
-            {
-                title: 'Configuración',
-                href: '/admin/settings',
-                icon: SettingsIcon,
-            },
-            {
-                title: 'Centro de Ayuda',
-                href: '/admin/support',
-                icon: HelpCircleIcon,
             },
         ],
     },
 ]
+
+function navItemIsActive(href: string, pathname: string) {
+    if (href === '/admin') return pathname === '/admin'
+    if (href === '/admin/roadmaps') {
+        return (
+            pathname === '/admin/roadmaps' ||
+            pathname === '/admin/roadmaps/new' ||
+            /^\/admin\/roadmaps\/\d+/.test(pathname)
+        )
+    }
+    if (href === '/admin/roadmaps/mios') {
+        return pathname === href || /^\/admin\/roadmaps\/\d+/.test(pathname)
+    }
+    if (href === '/admin/roadmaps/new') return pathname === href
+    return pathname === href || pathname.startsWith(`${href}/`)
+}
 
 export interface SidebarAppProps {
     children: React.ReactNode
@@ -213,9 +263,7 @@ const SidebarApp = ({
     const pathname = usePathname()
 
     const resolveRole = (r?: string | null): 'admin' | 'user' => {
-        if (!r) return 'admin'
-        const lower = r.toLowerCase()
-        return lower === 'admin' ? 'admin' : 'user'
+        return r?.toLowerCase() === 'admin' ? 'admin' : 'user'
     }
 
     const [sessionUser, setSessionUser] = useState<Session['user'] | null>(null)
@@ -237,7 +285,7 @@ const SidebarApp = ({
     }, [])
 
     // El rol se obtiene directamente de getSession() (o prop opcional 'role')
-    const currentRole: 'admin' | 'user' = role ? resolveRole(role) : (sessionRole ?? 'admin')
+    const currentRole: 'admin' | 'user' = role ? resolveRole(role) : (sessionRole ?? 'user')
 
     const activeNavGroups = currentRole === 'admin' ? adminNavGroups : userNavGroups
 
@@ -255,8 +303,8 @@ const SidebarApp = ({
         (currentRole === 'admin' ? 'AD' : 'US')
 
     return (
-        <div className='flex min-h-dvh w-full'>
-            <SidebarProvider>
+        <div className='flex h-dvh w-full min-w-0 overflow-hidden'>
+            <SidebarProvider className='h-full min-h-0 min-w-0'>
                 <Sidebar>
                     {/* Header del Sidebar con branding e indicador de rol único */}
                     <SidebarHeader className='border-sidebar-border border-b p-4'>
@@ -290,7 +338,7 @@ const SidebarApp = ({
                                 <SidebarGroupContent>
                                     <SidebarMenu>
                                         {group.items.map((item) => {
-                                            const isActive = pathname === item.href
+                                            const isActive = navItemIsActive(item.href, pathname)
                                             return (
                                                 <SidebarMenuItem key={item.title}>
                                                     <SidebarMenuButton
@@ -353,8 +401,8 @@ const SidebarApp = ({
                 </Sidebar>
 
                 {/* Estructura principal con barra superior */}
-                <div className='flex flex-1 flex-col'>
-                    <header className='bg-card sticky top-0 z-50 flex h-13.75 items-center justify-between gap-4 border-b px-4 py-2 sm:px-6'>
+                <div className='flex h-full min-h-0 min-w-0 flex-1 flex-col'>
+                    <header className='bg-card sticky top-0 z-50 flex h-13.75 shrink-0 items-center justify-between gap-4 border-b px-4 py-2 sm:px-6'>
                         <div className='flex items-center gap-3'>
                             <SidebarTrigger className='[&_svg]:size-5!' />
                             <div className='bg-border hidden h-4 w-px sm:block' />
@@ -376,7 +424,10 @@ const SidebarApp = ({
                         </div>
                     </header>
 
-                    <main className='size-full flex-1 px-4 py-6 sm:px-6'>
+                    <main
+                        data-lenis-prevent
+                        className='min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-y-contain px-4 py-6 sm:px-6'
+                    >
                         {children}
                     </main>
                 </div>
