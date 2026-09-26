@@ -83,7 +83,10 @@ export const UserDropdown = ({ session, className = '', onItemClick }: UserDropd
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
                             className='*:[svg]:text-muted-foreground cursor-pointer'
-                            onClick={() => onItemClick?.()}
+                            onClick={() => {
+                                onItemClick?.()
+                                router.push('/profile')
+                            }}
                         >
                             <HugeiconsIcon icon={User02Icon} strokeWidth={2} />
                             <span className='text-popover-foreground'>Mi perfil</span>
@@ -97,7 +100,10 @@ export const UserDropdown = ({ session, className = '', onItemClick }: UserDropd
                         </DropdownMenuItem>
                         <DropdownMenuItem
                             className='*:[svg]:text-muted-foreground cursor-pointer'
-                            onClick={() => router.push('/admin')}
+                            onClick={() => {
+                                onItemClick?.()
+                                router.push('/admin')
+                            }}
                         >
                             <HugeiconsIcon icon={CreditCardIcon} strokeWidth={2} />
                             <span className='text-popover-foreground'>Panel</span>

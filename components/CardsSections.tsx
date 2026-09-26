@@ -268,7 +268,7 @@ const CardsSections = () => {
     }, { scope: containerRef, dependencies: [lenis] })
 
     return (
-        <div ref={containerRef} className="" >
+        <div ref={containerRef} id="features" className="" >
             <section ref={stickyRef} className="pegajoso relative w-full h-svh p-8 text-white flex items-center justify-center overflow-hidden">
                 <div className="sticky-header mix-blend-difference">
                     <h1 className='text-center flex flex-col items-center select-none'>
