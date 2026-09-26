@@ -9,11 +9,7 @@ function nestMsg(body: { message?: string | string[] }, fallback: string) {
     return fallback;
 }
 
-export const getCursosAction = async (opts?: {
-    limit?: number;
-    offset?: number;
-    level?: string;
-}) => {
+export const getCursoAction = async (id: number) => {
     try {
         const session = await auth();
         if (!session)
@@ -23,13 +19,7 @@ export const getCursosAction = async (opts?: {
             };
 
         const url = process.env.ADDRESS_SERVER;
-        const params = new URLSearchParams({
-            limit: String(opts?.limit ?? 100),
-            offset: String(opts?.offset ?? 0),
-        });
-        if (opts?.level) params.set("level", opts.level);
-
-        const resp = await fetch(`${url}/api/admin/courses?${params}`, {
+        const resp = await fetch(`${url}/api/admin/courses/${id}`, {
             headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${session.user.tokenAuth}`,
@@ -41,16 +31,20 @@ export const getCursosAction = async (opts?: {
         if (!resp.ok) {
             return {
                 ok: false as const,
-                msg: nestMsg(body, "Error al obtener los cursos"),
+                msg: nestMsg(body, "Error al obtener el curso"),
             };
+        }
+
+        if (!body.data) {
+            return { ok: false as const, msg: "Error al obtener el curso" };
         }
 
         return {
             ok: true as const,
-            data: (body.data ?? []) as CursoItem[],
-            msg: "Cursos obtenidos exitosamente",
+            data: body.data as CursoItem,
+            msg: "Curso obtenido exitosamente",
         };
     } catch {
-        return { ok: false as const, msg: "Error al obtener los cursos" };
+        return { ok: false as const, msg: "Error al obtener el curso" };
     }
 };

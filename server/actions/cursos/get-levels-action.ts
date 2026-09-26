@@ -1,7 +1,6 @@
 'use server';
 
 import { auth } from "@/server/auth";
-import type { CursoItem } from "@/types/curso-schema";
 
 function nestMsg(body: { message?: string | string[] }, fallback: string) {
     if (typeof body.message === "string") return body.message;
@@ -9,11 +8,7 @@ function nestMsg(body: { message?: string | string[] }, fallback: string) {
     return fallback;
 }
 
-export const getCursosAction = async (opts?: {
-    limit?: number;
-    offset?: number;
-    level?: string;
-}) => {
+export const getLevelsAction = async () => {
     try {
         const session = await auth();
         if (!session)
@@ -23,13 +18,7 @@ export const getCursosAction = async (opts?: {
             };
 
         const url = process.env.ADDRESS_SERVER;
-        const params = new URLSearchParams({
-            limit: String(opts?.limit ?? 100),
-            offset: String(opts?.offset ?? 0),
-        });
-        if (opts?.level) params.set("level", opts.level);
-
-        const resp = await fetch(`${url}/api/admin/courses?${params}`, {
+        const resp = await fetch(`${url}/api/levels`, {
             headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${session.user.tokenAuth}`,
@@ -41,16 +30,16 @@ export const getCursosAction = async (opts?: {
         if (!resp.ok) {
             return {
                 ok: false as const,
-                msg: nestMsg(body, "Error al obtener los cursos"),
+                msg: nestMsg(body, "Error al obtener los niveles"),
             };
         }
 
         return {
             ok: true as const,
-            data: (body.data ?? []) as CursoItem[],
-            msg: "Cursos obtenidos exitosamente",
+            data: (body.data ?? []) as string[],
+            msg: "Niveles obtenidos exitosamente",
         };
     } catch {
-        return { ok: false as const, msg: "Error al obtener los cursos" };
+        return { ok: false as const, msg: "Error al obtener los niveles" };
     }
 };
