@@ -1,50 +1,78 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
-import { auth } from "@/server/auth";
 import SidebarApp from "../../_ui/Sidebar";
 import { getAllCategoriesAction } from "@/server/actions/categorias/get-all-categorias-action";
 import { getAllTechnologiesAction } from "@/server/actions/technologies/get-all-technologies-action";
-import { getAllCoursesAction } from "@/server/actions/cursos/get-all-cursos-action";
-import FormnewCourse from "./_ui/FormNewCourse";
+import { getCursosAction } from "@/server/actions/cursos/get-cursos-action";
+import { getLevelsAction } from "@/server/actions/cursos/get-levels-action";
+import {
+    COURSE_LEVELS,
+    normalizeCursoItem,
+    toNumericId,
+    type CatalogRef,
+} from "../_ui/curso-helpers";
+import type { CourseLevel } from "@/types/curso-schema";
+import FormNewCurso from "./_ui/FormNewCurso";
 
 export const metadata: Metadata = {
-    title: "Registrar Nuevo Curso | Admin Devtalles",
-    description: "Crear y publicar un nuevo curso en la plataforma de aprendizaje Devtalles.",
+    title: "Nuevo curso | Admin Devtalles",
+    description: "Crear o editar un curso del catálogo Devtalles.",
 };
 
+function toCatalogOptions(
+    items: Array<{ id: string | number; name: string }> | undefined
+): CatalogRef[] {
+    if (!items) return [];
+    return items
+        .map((item) => ({
+            id: toNumericId(item.id),
+            name: item.name,
+        }))
+        .filter((item) => Number.isFinite(item.id));
+}
+
 export default async function NewCursoPage() {
-    const session = await auth();
-    if (!session) {
-        redirect("/login");
-    }
-    if (session.user.role !== "admin") {
-        redirect("/");
-    }
+    const [categoriesRes, technologiesRes, coursesRes, levelsRes] =
+        await Promise.all([
+            getAllCategoriesAction(),
+            getAllTechnologiesAction(),
+            getCursosAction({ limit: 100, offset: 0 }),
+            getLevelsAction(),
+        ]);
 
-    const [categoriesRes, technologiesRes, coursesRes] = await Promise.all([
-        getAllCategoriesAction(),
-        getAllTechnologiesAction(),
-        getAllCoursesAction(),
-    ]);
+    const categories = toCatalogOptions(
+        categoriesRes.ok ? categoriesRes.data : undefined
+    );
+    const technologies = toCatalogOptions(
+        technologiesRes.ok ? technologiesRes.data : undefined
+    );
+    const courses =
+        coursesRes.ok && coursesRes.data
+            ? coursesRes.data.map(normalizeCursoItem)
+            : [];
 
-    const initialCategories = categoriesRes.ok && categoriesRes.data ? categoriesRes.data : [];
-    const initialTechnologies = technologiesRes.ok && technologiesRes.data ? technologiesRes.data : [];
-    const initialCourses = coursesRes.ok && coursesRes.data ? coursesRes.data : [];
+    const levelsFromApi =
+        levelsRes.ok && levelsRes.data
+            ? (levelsRes.data.filter((l): l is CourseLevel =>
+                  COURSE_LEVELS.includes(l as CourseLevel)
+              ) as CourseLevel[])
+            : [];
+    const levels = levelsFromApi.length > 0 ? levelsFromApi : COURSE_LEVELS;
 
     return (
         <SidebarApp>
             <Suspense
                 fallback={
-                    <div className="flex h-96 w-full items-center justify-center p-8 text-sm text-muted-foreground animate-pulse">
-                        Cargando formulario y dependencias del curso...
+                    <div className="p-8 text-center text-xs text-muted-foreground">
+                        Cargando formulario...
                     </div>
                 }
             >
-                <FormnewCourse
-                    initialCategories={initialCategories}
-                    initialTechnologies={initialTechnologies}
-                    initialCourses={initialCourses}
+                <FormNewCurso
+                    categories={categories}
+                    technologies={technologies}
+                    courses={courses}
+                    levels={levels}
                 />
             </Suspense>
         </SidebarApp>
