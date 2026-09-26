@@ -3,8 +3,8 @@
 import { actionClient } from "@/lib/action-client";
 import { auth } from "@/server/auth";
 import {
-    createCursoSchema,
     toCreateCoursePayload,
+    updateCursoSchema,
 } from "@/types/curso-schema";
 import { revalidatePath } from "next/cache";
 
@@ -14,8 +14,8 @@ function nestMsg(body: { message?: string | string[] }, fallback: string) {
     return fallback;
 }
 
-export const createCursoAction = actionClient
-    .inputSchema(createCursoSchema)
+export const updateCursoAction = actionClient
+    .inputSchema(updateCursoSchema)
     .action(async ({ parsedInput }) => {
         try {
             const session = await auth();
@@ -25,21 +25,22 @@ export const createCursoAction = actionClient
                     msg: "No tiene permisos para realizar esta operacion",
                 };
 
+            const { id, ...rest } = parsedInput;
             const url = process.env.ADDRESS_SERVER;
-            const resp = await fetch(`${url}/api/admin/courses`, {
-                method: "POST",
+            const resp = await fetch(`${url}/api/admin/courses/${id}`, {
+                method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${session.user.tokenAuth}`,
                 },
-                body: JSON.stringify(toCreateCoursePayload(parsedInput)),
+                body: JSON.stringify(toCreateCoursePayload(rest)),
             });
             const body = await resp.json();
 
             if (!resp.ok) {
                 return {
                     ok: false,
-                    msg: nestMsg(body, "Error al crear el curso"),
+                    msg: nestMsg(body, "Error al actualizar el curso"),
                 };
             }
 
@@ -47,9 +48,9 @@ export const createCursoAction = actionClient
             return {
                 ok: true,
                 data: body.data,
-                msg: "Curso creado exitosamente",
+                msg: "Curso actualizado exitosamente",
             };
         } catch {
-            return { ok: false, msg: "Error al crear el curso" };
+            return { ok: false, msg: "Error al actualizar el curso" };
         }
     });
