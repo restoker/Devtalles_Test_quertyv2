@@ -1,5 +1,5 @@
 'use server';
-
+import { unwrap } from "@/lib/api-response";
 import { auth } from "@/server/auth";
 import { revalidatePath } from "next/cache";
 import type { CreateRoadmapSchema } from "@/types/roadmap-schema";
@@ -44,7 +44,7 @@ export const createRoadmapAction = async (input: CreateRoadmapSchema) => {
         revalidatePath("/admin/roadmaps");
         return {
             ok: true as const,
-            data: body as RoadmapView,
+            data: unwrap<RoadmapView>(body),
             msg: "Roadmap creado exitosamente",
         };
     } catch {

@@ -102,7 +102,7 @@ export default function AssessmentsList() {
     setPickerLoading(true);
     const res = await getActiveQuestionnairesAction();
     setPickerLoading(false);
-    if (!res.ok) {
+    if (!res.ok || !res.data) {
       toast.add({
         title: "No se pudieron cargar los cuestionarios",
         description: res.msg,
@@ -118,7 +118,7 @@ export default function AssessmentsList() {
     setStartingId(questionnaireId);
     const res = await createAssessmentAction(questionnaireId);
     setStartingId(null);
-    if (!res.ok) {
+    if (!res.ok || !res.data) {
       toast.add({
         title: "No se pudo iniciar el cuestionario",
         description: res.msg,

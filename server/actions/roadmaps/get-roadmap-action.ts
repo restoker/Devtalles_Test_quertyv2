@@ -1,5 +1,5 @@
 'use server';
-
+import { unwrap } from "@/lib/api-response";
 import { auth } from "@/server/auth";
 import type { RoadmapView } from "@/types/roadmap-schema";
 
@@ -36,7 +36,7 @@ export const getRoadmapAction = async (id: number) => {
 
         return {
             ok: true as const,
-            data: body as RoadmapView,
+            data: unwrap<RoadmapView>(body),
             msg: "Roadmap obtenido exitosamente",
         };
     } catch {

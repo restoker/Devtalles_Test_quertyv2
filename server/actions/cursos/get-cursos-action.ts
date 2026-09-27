@@ -1,6 +1,7 @@
 'use server';
 
 import { auth } from "@/server/auth";
+import { unwrapList } from "@/lib/api-response";
 import type { CursoItem } from "@/types/curso-schema";
 
 function nestMsg(body: { message?: string | string[] }, fallback: string) {
@@ -47,7 +48,7 @@ export const getCursosAction = async (opts?: {
 
         return {
             ok: true as const,
-            data: (body.data ?? []) as CursoItem[],
+            data: unwrapList<CursoItem>(body),
             msg: "Cursos obtenidos exitosamente",
         };
     } catch {

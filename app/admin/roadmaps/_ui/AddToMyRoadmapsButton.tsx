@@ -47,7 +47,7 @@ export default function AddToMyRoadmapsButton({
             onClick={() =>
                 startTransition(async () => {
                     const result = await copyRoadmapAction(globalId);
-                    if (!result.ok) {
+                    if (!result.ok || !result.data) {
                         toast.add({
                             title: "No se pudo agregar",
                             description: result.msg,

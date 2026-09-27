@@ -1,6 +1,7 @@
 "use server";
 
 import { auth } from "@/server/auth";
+import { unwrap } from "@/lib/api-response";
 import { revalidatePath } from "next/cache";
 import type { RoadmapView } from "@/types/roadmap-schema";
 
@@ -41,7 +42,7 @@ export const copyRoadmapAction = async (roadmapId: number) => {
         revalidatePath("/roadmaps");
         return {
             ok: true as const,
-            data: body as RoadmapView,
+            data: unwrap<RoadmapView>(body),
             msg: "Roadmap agregado a tu lista",
         };
     } catch {

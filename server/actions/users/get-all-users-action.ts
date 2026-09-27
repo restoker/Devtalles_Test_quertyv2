@@ -1,6 +1,7 @@
 "use server";
 
 import { auth } from "@/server/auth";
+import { unwrapList } from "@/lib/api-response";
 import type { AdminUser } from "@/types/user-admin-schema";
 import { nestMsg } from "./_nest-msg";
 
@@ -40,7 +41,7 @@ export const getAllUsersAction = async (opts?: {
 
         return {
             ok: true as const,
-            data: (body.data ?? []) as AdminUser[],
+            data: unwrapList<AdminUser>(body),
             meta: body.meta as
                 | { total: number; limit: number; offset: number }
                 | undefined,

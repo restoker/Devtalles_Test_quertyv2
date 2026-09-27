@@ -1,5 +1,5 @@
 'use server';
-
+import { unwrap } from "@/lib/api-response";
 import { auth } from "@/server/auth";
 import type { Questionnaire } from "@/types/assessment-schema";
 
@@ -29,7 +29,7 @@ export const getAssessmentQuestionnaireAction = async (id: number) => {
 
     return {
       ok: true as const,
-      data: body as Questionnaire,
+      data: unwrap<Questionnaire>(body),
       msg: "Cuestionario obtenido exitosamente",
     };
   } catch {

@@ -1,5 +1,5 @@
 'use server';
-
+import { unwrap } from "@/lib/api-response";
 import { auth } from "@/server/auth";
 import { revalidatePath } from "next/cache";
 import type { RoadmapView } from "@/types/roadmap-schema";
@@ -41,7 +41,7 @@ export const generateRoadmapAction = async (assessmentId: number) => {
         revalidatePath("/admin/roadmaps/mios");
         return {
             ok: true as const,
-            data: body as RoadmapView,
+            data: unwrap<RoadmapView>(body),
             msg: "Hemos seleccionado los mejores cursos para ti",
         };
     } catch {

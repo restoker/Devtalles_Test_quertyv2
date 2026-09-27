@@ -1,6 +1,7 @@
 'use server';
 
 import { auth } from "@/server/auth";
+import { unwrapList } from "@/lib/api-response";
 import type { RoadmapView } from "@/types/roadmap-schema";
 
 function nestMsg(body: { message?: string | string[] }, fallback: string) {
@@ -36,7 +37,7 @@ export const getAllRoadmapsAction = async () => {
 
         return {
             ok: true as const,
-            data: (Array.isArray(body) ? body : []) as RoadmapView[],
+            data: unwrapList<RoadmapView>(body),
             msg: "Roadmaps obtenidos exitosamente",
         };
     } catch {
