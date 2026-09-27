@@ -7,7 +7,7 @@ import { SessionProvider } from "next-auth/react";
 
 const Provider = ({ children }: { children: React.ReactNode }) => {
     return (
-        <SessionProvider>
+        <SessionProvider refetchOnWindowFocus={false}>
             {/* <ReactLenis root> */}
             <Toaster timeout={2000} limit={3} />
             {children}
