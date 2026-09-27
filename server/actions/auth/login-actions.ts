@@ -11,24 +11,9 @@ export const loginAction = actionClient
     .action(async ({ parsedInput: { email, password } }) => {
         try {
             const sanitizedEmail = email.trim().toLowerCase();
-            const url = process.env.ADDRESS_SERVER;
-            const user = await fetch(`${url}/api/auth/login`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ email: sanitizedEmail, password })
-            });
-            const data = await user.json();
-            if (!user.ok || !data?.data) {
-                return {
-                    ok: false as const,
-                    msg: LOGIN_ERROR,
-                }
-            }
 
             const session = await signIn('credentials', {
-                email,
+                email: sanitizedEmail,
                 password,
                 redirect: false,
             });
