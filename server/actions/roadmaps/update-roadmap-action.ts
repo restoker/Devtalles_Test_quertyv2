@@ -1,5 +1,5 @@
 'use server';
-
+import { unwrap } from "@/lib/api-response";
 import { auth } from "@/server/auth";
 import { revalidatePath } from "next/cache";
 import type { UpdateRoadmapSchema } from "@/types/roadmap-schema";
@@ -50,7 +50,7 @@ export const updateRoadmapAction = async (
         revalidatePath("/admin/roadmaps");
         return {
             ok: true as const,
-            data: body as RoadmapView,
+            data: unwrap<RoadmapView>(body),
             msg: "Roadmap actualizado exitosamente",
         };
     } catch {

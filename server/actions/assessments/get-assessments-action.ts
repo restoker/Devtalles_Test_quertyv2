@@ -1,5 +1,6 @@
 'use server';
 
+import { unwrapList } from "@/lib/api-response";
 import { auth } from "@/server/auth";
 import type { Assessment } from "@/types/assessment-schema";
 
@@ -11,7 +12,7 @@ async function fetchAssessments(path: string, fallback: string) {
     }
 
     const url = process.env.ADDRESS_SERVER;
-    const resp = await fetch(`${url}${path}`, {
+    const resp = await fetch(`${url}${path}?limit=100`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${session.user.tokenAuth}`,
@@ -29,7 +30,7 @@ async function fetchAssessments(path: string, fallback: string) {
 
     return {
       ok: true as const,
-      data: body as Assessment[],
+      data: unwrapList<Assessment>(body),
       msg: "Evaluaciones obtenidas exitosamente",
     };
   } catch {

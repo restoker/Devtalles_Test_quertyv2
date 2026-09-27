@@ -1,6 +1,7 @@
 'use server';
 
 import { auth } from "@/server/auth";
+import { unwrapList } from "@/lib/api-response";
 
 function nestMsg(body: { message?: string | string[] }, fallback: string) {
     if (typeof body.message === "string") return body.message;
@@ -36,7 +37,7 @@ export const getLevelsAction = async () => {
 
         return {
             ok: true as const,
-            data: (body.data ?? []) as string[],
+            data: unwrapList<string>(body),
             msg: "Niveles obtenidos exitosamente",
         };
     } catch {

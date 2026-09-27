@@ -1,5 +1,5 @@
 'use server';
-
+import { unwrap } from "@/lib/api-response";
 import { auth } from "@/server/auth";
 import { revalidatePath } from "next/cache";
 import type { RoadmapView } from "@/types/roadmap-schema";
@@ -49,7 +49,7 @@ export const updateRoadmapProgressAction = async (
         revalidatePath("/roadmaps");
         return {
             ok: true as const,
-            data: body as RoadmapView,
+            data: unwrap<RoadmapView>(body),
             msg: "Progreso actualizado exitosamente",
         };
     } catch {

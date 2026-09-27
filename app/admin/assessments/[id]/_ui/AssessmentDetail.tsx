@@ -149,7 +149,7 @@ export default function AssessmentDetail({
       getAssessmentQuestionnaireAction(id),
     ]);
 
-    if (!assessmentRes.ok) {
+    if (!assessmentRes.ok || !assessmentRes.data) {
       if (
         assessmentRes.msg.toLowerCase().includes("not found") ||
         assessmentRes.msg.toLowerCase().includes("no encontr")
@@ -161,7 +161,7 @@ export default function AssessmentDetail({
       return;
     }
 
-    if (!questionnaireRes.ok) {
+    if (!questionnaireRes.ok || !questionnaireRes.data) {
       setLoadError(questionnaireRes.msg);
       return;
     }
@@ -220,7 +220,7 @@ export default function AssessmentDetail({
 
   const refreshQuestionnaire = async (nextAssessment: Assessment) => {
     const qRes = await getAssessmentQuestionnaireAction(nextAssessment.id);
-    if (!qRes.ok) {
+    if (!qRes.ok || !qRes.data) {
       applyAssessment(nextAssessment, questionnaire!);
       toast.add({
         title: "Respuesta actualizada",
@@ -340,7 +340,7 @@ export default function AssessmentDetail({
       buildUpsertPayload(current, draft)
     );
 
-    if (!res.ok) {
+    if (!res.ok || !res.data) {
       toast.add({
         title: "No se pudo guardar",
         description: res.msg,
@@ -350,7 +350,7 @@ export default function AssessmentDetail({
     }
 
     const qRes = await getAssessmentQuestionnaireAction(assessment.id);
-    if (!qRes.ok) {
+    if (!qRes.ok || !qRes.data) {
       applyAssessment(res.data, questionnaire);
       toast.add({
         title: "Respuesta actualizada",
@@ -415,7 +415,7 @@ export default function AssessmentDetail({
     const res = await completeAssessmentAction(assessment.id);
     setBusy(false);
 
-    if (!res.ok) {
+    if (!res.ok || !res.data) {
       toast.add({
         title: "No se pudo completar",
         description: res.msg,
@@ -439,7 +439,7 @@ export default function AssessmentDetail({
     const res = await deleteAssessmentAnswerAction(assessment.id, current.id);
     setBusy(false);
 
-    if (!res.ok) {
+    if (!res.ok || !res.data) {
       toast.add({
         title: "No se pudo quitar",
         description: res.msg,
@@ -464,7 +464,7 @@ export default function AssessmentDetail({
     const res = await generateRoadmapAction(assessment.id);
     setBusy(false);
 
-    if (!res.ok) {
+    if (!res.ok || !res.data) {
       toast.add({
         title: "No se pudo armar la ruta",
         description: res.msg,

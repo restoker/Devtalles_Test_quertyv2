@@ -1,6 +1,7 @@
 "use server";
 
 import { auth } from "@/server/auth";
+import { unwrapList } from "@/lib/api-response";
 import type { AdminUser } from "@/types/user-admin-schema";
 import { nestMsg } from "./_nest-msg";
 
@@ -33,7 +34,7 @@ export const searchUsersAction = async (key: string) => {
 
         return {
             ok: true as const,
-            data: (body.data ?? []) as AdminUser[],
+            data: unwrapList<AdminUser>(body),
             msg: "Búsqueda completada",
         };
     } catch {
