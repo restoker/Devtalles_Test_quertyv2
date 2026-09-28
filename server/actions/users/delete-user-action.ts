@@ -14,7 +14,7 @@ export const deleteUserAction = async (id: string) => {
             };
 
         const url = process.env.ADDRESS_SERVER;
-        const resp = await fetch(`${url}/api/user/${id}`, {
+        const resp = await fetch(`${url}/api/users/${id}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",

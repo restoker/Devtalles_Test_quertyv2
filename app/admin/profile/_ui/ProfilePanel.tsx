@@ -42,7 +42,7 @@ export default function ProfilePanel({
                 </div>
             ) : null}
 
-            <section className="rounded-[1.6rem] border border-border/60 bg-card/95 p-6 shadow-sm ring-1 ring-black/[0.04] dark:ring-white/10">
+            <section className="rounded-[1.6rem] border border-border/60 bg-card/95 p-6 shadow-sm ring-1 ring-black/4 dark:ring-white/10">
                 <div className="flex items-center gap-4">
                     <Avatar className="size-14 ring-2 ring-purple-600/20">
                         {image ? <AvatarImage src={image} alt={fullName} /> : null}

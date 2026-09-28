@@ -28,7 +28,7 @@ export const createUserAction = async (input: CreateUserAdminSchema) => {
         }
 
         const url = process.env.ADDRESS_SERVER;
-        const resp = await fetch(`${url}/api/user`, {
+        const resp = await fetch(`${url}/api/users`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

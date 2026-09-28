@@ -19,7 +19,9 @@ function roleLabel(role?: string | null) {
 export default async function AdminProfilePage() {
     const session = await auth();
     const user = session?.user;
-    const fetched = user?.id ? await getUserAction(user.id) : null;
+    const role = user?.role?.toLowerCase();
+    const canFetchDetails = Boolean(user?.id) && (role === "admin" || role === "client");
+    const fetched = canFetchDetails ? await getUserAction(user!.id) : null;
     const account = fetched?.ok ? fetched.data : null;
 
     const fullName = account
@@ -37,10 +39,10 @@ export default async function AdminProfilePage() {
         { label: "Rol", value: roleLabel(account?.role ?? user?.role) },
         ...(account
             ? [
-                  { label: "Dirección", value: account.address || "—" },
-                  { label: "Estado", value: account.isActive ? "Activo" : "Inactivo" },
-                  { label: "Discord", value: account.discordId ? "Conectado" : "No conectado" },
-              ]
+                { label: "Dirección", value: account.address || "—" },
+                { label: "Estado", value: account.isActive ? "Activo" : "Inactivo" },
+                { label: "Discord", value: account.discordId ? "Conectado" : "No conectado" },
+            ]
             : []),
     ];
 

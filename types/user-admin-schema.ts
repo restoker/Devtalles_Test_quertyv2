@@ -71,7 +71,7 @@ export const updateUserAdminSchema = z.object({
 
 export type UpdateUserAdminSchema = z.infer<typeof updateUserAdminSchema>;
 
-/** Nested client summary from GET /api/user (camelCase output). */
+/** Nested client summary from GET /api/users (camelCase output). */
 export type AdminUserClient = {
     id: string;
     email: string;

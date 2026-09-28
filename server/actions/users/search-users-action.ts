@@ -15,7 +15,7 @@ export const searchUsersAction = async (key: string) => {
             };
 
         const url = process.env.ADDRESS_SERVER;
-        const resp = await fetch(`${url}/api/user/search`, {
+        const resp = await fetch(`${url}/api/users/search`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

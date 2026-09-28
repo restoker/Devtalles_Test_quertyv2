@@ -21,7 +21,7 @@ export const getAllUsersAction = async (opts?: {
         const offset = opts?.offset ?? 0;
         const url = process.env.ADDRESS_SERVER;
         const resp = await fetch(
-            `${url}/api/user?limit=${limit}&offset=${offset}`,
+            `${url}/api/users?limit=${limit}&offset=${offset}`,
             {
                 headers: {
                     "Content-Type": "application/json",

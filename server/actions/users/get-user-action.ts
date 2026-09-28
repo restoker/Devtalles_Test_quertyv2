@@ -14,7 +14,7 @@ export const getUserAction = async (id: string) => {
             };
 
         const url = process.env.ADDRESS_SERVER;
-        const resp = await fetch(`${url}/api/user/${id}`, {
+        const resp = await fetch(`${url}/api/users/${id}`, {
             headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${session.user.tokenAuth}`,
