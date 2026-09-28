@@ -85,19 +85,19 @@ export const UserDropdown = ({ session, className = '', onItemClick }: UserDropd
                             className='*:[svg]:text-muted-foreground cursor-pointer'
                             onClick={() => {
                                 onItemClick?.()
-                                router.push('/profile')
+                                router.push('/admin/profile')
                             }}
                         >
                             <HugeiconsIcon icon={User02Icon} strokeWidth={2} />
                             <span className='text-popover-foreground'>Mi perfil</span>
                         </DropdownMenuItem>
-                        <DropdownMenuItem
+                        {/* <DropdownMenuItem
                             className='*:[svg]:text-muted-foreground cursor-pointer'
                             onClick={() => onItemClick?.()}
                         >
                             <HugeiconsIcon icon={SettingsIcon} strokeWidth={2} />
                             <span className='text-popover-foreground'>Configuración</span>
-                        </DropdownMenuItem>
+                        </DropdownMenuItem> */}
                         <DropdownMenuItem
                             className='*:[svg]:text-muted-foreground cursor-pointer'
                             onClick={() => {
@@ -108,13 +108,13 @@ export const UserDropdown = ({ session, className = '', onItemClick }: UserDropd
                             <HugeiconsIcon icon={CreditCardIcon} strokeWidth={2} />
                             <span className='text-popover-foreground'>Panel</span>
                         </DropdownMenuItem>
-                        <DropdownMenuItem
+                        {/* <DropdownMenuItem
                             className='*:[svg]:text-muted-foreground cursor-pointer'
                             onClick={() => onItemClick?.()}
                         >
                             <HugeiconsIcon icon={Notification01Icon} strokeWidth={2} />
                             <span className='text-popover-foreground'>Notificaciones</span>
-                        </DropdownMenuItem>
+                        </DropdownMenuItem> */}
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
                             variant='destructive'
