@@ -23,3 +23,11 @@ declare module 'next-auth/jwt' {
         tokenAuth?: string
     }
 }
+
+declare module '@auth/core/jwt' {
+    interface JWT {
+        role?: string | null
+        lastname?: string | null
+        tokenAuth?: string
+    }
+}

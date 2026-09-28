@@ -213,7 +213,19 @@ export default function FormnewCourse({
             return;
         }
 
-        execute(formData);
+        execute({
+            id: formData.id,
+            title: formData.title,
+            description: formData.description ?? '',
+            level: formData.level,
+            url: formData.url ?? '',
+            imageUrl: formData.imageUrl ?? '',
+            durationMinutes: formData.durationMinutes ?? '',
+            instructor: formData.instructor ?? '',
+            categoryIds: formData.categoryIds ?? [],
+            technologyIds: formData.technologyIds ?? [],
+            prerequisiteIds: formData.prerequisiteIds ?? [],
+        });
     };
 
     // Cálculo de completitud para la tarjeta en vivo

@@ -14,6 +14,7 @@ export const crearCursoSchema = z.object({
     level: z.enum(["beginner", "intermediate", "advanced"]),
     imageUrl: z.string().optional(),
     instructor: z.string().optional(),
+    durationMinutes: z.string().optional(),
     prerequisiteIds: z.array(z.number()).optional(),
     categoryIds: z.array(z.number()).optional(),
     technologyIds: z.array(z.number()).optional(),

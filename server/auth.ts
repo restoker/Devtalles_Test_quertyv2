@@ -153,12 +153,12 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
         async session({ session, token }) {
             if (session.user) {
                 session.user.id = token.sub ?? "";
-                session.user.role = token.role ?? null;
+                session.user.role = (token.role as string | null) ?? null;
                 session.user.name = token.name ?? "";
-                session.user.lastname = token.lastname ?? "";
+                session.user.lastname = (token.lastname as string) ?? "";
                 session.user.email = token.email ?? "";
                 session.user.image = (token.image as string | null) ?? null;
-                session.user.tokenAuth = token.tokenAuth ?? "";
+                session.user.tokenAuth = (token.tokenAuth as string) ?? "";
             }
             return session;
         },
